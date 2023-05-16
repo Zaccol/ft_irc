@@ -1,0 +1,10 @@
+:lili MODE lili :+i
+:tngnet.ircnet.io 462 lili :Unauthorized command (already registered)
+:tngnet.ircnet.io 461 lili PASS :Not enough parameters
+JOIN #machin
+:lili!~sh@62.210.32.100 JOIN :#machin
+:tngnet.ircnet.io 353 lili = #machin :@lili 
+:tngnet.ircnet.io 366 lili #machin :End of NAMES list.
+PART #machin
+:lili!~sh@62.210.32.100 PART #machin :
+
