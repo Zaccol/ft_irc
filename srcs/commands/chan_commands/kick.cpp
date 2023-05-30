@@ -98,14 +98,14 @@ void	server::cmd_kick(commande &param){
 				return ;
 			}
 			if (get_client_by_fd(param.get_fd()).is_it_tonchan(*it)){
-				to_send =  ":"+_name+" 442 ";
+				to_send =  ":"+_name+" 442 " + get_client_by_fd(param.get_fd()).get_nickname()+" ";
 				to_send += *it;
 				to_send += ERR_NOTONCHANNEL;
 				_messages.push_back(message(to_send, param.get_fd()));
 				return ;
 			}
 			if (get_channel_by_name(*it).is_client_operator(get_client_by_fd(param.get_fd()).get_nickname()) == EXIT_FAILURE){
-				to_send =  ":"+_name+" 482 ";
+				to_send =  ":"+_name+" 482 " + get_client_by_fd(param.get_fd()).get_nickname()+" ";
 				to_send += *it;
 				to_send += ERR_CHANOPRIVSNEEDED;
 				_messages.push_back(message(to_send, param.get_fd()));
@@ -145,7 +145,7 @@ void	server::cmd_kick(commande &param){
 			return ;
 		}
 		if (get_client_by_fd(param.get_fd()).is_it_tonchan(list_chans)){
-			to_send =  ":"+_name+" 442 ";
+			to_send =  ":"+_name+" 442 " + get_client_by_fd(param.get_fd()).get_nickname()+" ";
 			to_send += list_chans;
 			to_send += ERR_NOTONCHANNEL;
 			_messages.push_back(message(to_send, param.get_fd()));

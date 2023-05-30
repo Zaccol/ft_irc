@@ -24,21 +24,21 @@ void	server::cmd_invite(commande &param){
 		return ;
 	}
 	if (client_exists(args.at(0)) == EXIT_FAILURE){
-		to_send =  ":"+_name+" 401 ";
+		to_send =  ":"+_name+" 401 " + get_client_by_fd(param.get_fd()).get_nickname()+" ";
 		to_send += args.at(0);
 		to_send += ERR_NOSUCHNICK;
 		_messages.push_back(message(to_send, param.get_fd()));
 		return ;
 	}
 	if (get_client_by_fd(param.get_fd()).is_it_tonchan(args.at(1)) == EXIT_FAILURE){
-		to_send =  ":"+_name+" 442 ";
+		to_send =  ":"+_name+" 442 " + get_client_by_fd(param.get_fd()).get_nickname()+" ";
 		to_send += args.at(1);
 		to_send += ERR_NOTONCHANNEL;
 		_messages.push_back(message(to_send, param.get_fd()));
 		return ;
 	}
 	if (get_channel_by_name(args.at(1)).is_client_in_chan(args.at(0)) == EXIT_SUCCESS){
-		to_send =  ":"+_name+" 443 ";
+		to_send =  ":"+_name+" 443 " + get_client_by_fd(param.get_fd()).get_nickname()+" ";
 		to_send += args.at(0);
 		to_send += " ";
 		to_send += args.at(1);
@@ -62,9 +62,4 @@ void	server::cmd_invite(commande &param){
 	get_client_by_name(args.at(0)).add_chan_to_client(get_channel_by_name(args.at(1)));
 	get_channel_by_name(args.at(1)).add_client_to_chan(get_client_by_name(args.at(0)));
 	sending_replies_for_existing_channel(get_client_by_name(args[0]).get_socket(), args[1]);
-	// std::string &param = args[1];
-	// const int	&fd = get_client_by_name(args[0]).get_socket();
-	// std::string cmd = "JOIN";
-	// commande to_use = commande(param, fd, cmd);
-	// cmd_join(commande(param, fd, cmd));
 }

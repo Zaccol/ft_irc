@@ -72,6 +72,8 @@ class server{
 		void						add_client_to_server(client &user);
 		int							is_valid_chan_name(commande &param, std::string chan_check);
 		void						create_a_new_channel(commande &param, std::string new_channel_name);
+		void						delete_chan(std::string which_chan);
+		void						delete_client(std::string which_client);
 		void						sending_replies_for_new_channel(int fd, std::string chan_name);
 		void						sending_replies_for_existing_channel(int fd, std::string chan_name);
 		int							handle_errone(commande &param);
@@ -79,6 +81,8 @@ class server{
 		void						fct_buffer(fd_set &read_fds);
 		void						handle_message(std::string line, int fd);
 		commande					parsing_commands(std::string msg, int fd);
+		std::string					list_active_mods(channel &chan);
+
 };
 
 int	server_loop(server &serv);

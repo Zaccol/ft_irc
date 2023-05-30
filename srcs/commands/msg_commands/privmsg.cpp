@@ -19,7 +19,7 @@ void	server::cmd_privmsg(commande &param){
 	if (args.size() == 1){
 		for (size_t i = 0; i < args.size(); i++){
 			if (args[i] == " "){
-				to_send = ERR_NORECIPIENT;
+				to_send = ":"+_name+ERR_NORECIPIENT;
 				to_send += param.get_cmd();
 				to_send += ")\r\n";
 				_messages.push_back(message(to_send, param.get_fd()));
@@ -31,7 +31,7 @@ void	server::cmd_privmsg(commande &param){
 		return ;
 	}
 	if (client_exists(args[0]) == EXIT_FAILURE && channel_exists(args[0]) == EXIT_FAILURE){
-		to_send = "401 ";
+		to_send = ":"+_name+" 401 ";
 		to_send += get_client_by_fd(param.get_fd()).get_nickname();
 		to_send += " ";
 		to_send += args[0];

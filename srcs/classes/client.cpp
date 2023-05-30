@@ -128,7 +128,7 @@ void	client::remove_one_channel_of_user(std::string which_chan){
 
 	for (; it != ite; it++){
 		if ((*it).get_name() == which_chan){
-			(*it).remove_client_from_chan(*this);
+			// (*it).remove_client_from_chan(*this);
 			_channel_list.erase(it);
 			return ;
 		}

@@ -62,10 +62,15 @@ server::~server(void)
 	for (; it != ite; it++){
 		(*it).remove_all_channels_of_user();
 	}
+	// _messages.erase(_messages.begin(), _messages.end());
+	std::vector<message>::iterator it2 = _messages.begin();
+	std::vector<message>::iterator ite2 = _messages.end();
+	for (; it2 != ite2; it2++)
+		(*it2).~message();
 	_full_channel_list.erase(_full_channel_list.begin(), _full_channel_list.end());
 	_full_client_list.erase(_full_client_list.begin(), _full_client_list.end());
 	close(_port);
-	std::cout << "destruction terminado putain\n\n" << std::endl;
+	// std::cout << "destruction terminado putain\n\n" << std::endl;
 }
 
 int	server::add_client(void)
@@ -123,6 +128,7 @@ void	server::send_messages(fd_set write_fds){
 		for (std::vector<message>::iterator it = _messages.begin(); it != _messages.end(); it++){
 			if (FD_ISSET((*it).get_fd(), &write_fds)){
 				send((*it).get_fd(), (*it).get_text().c_str(), (*it).get_text().size(), 0);
+				// std::cout << (*it).get_text();
 			}
 		}
 	}
@@ -159,23 +165,6 @@ commande	server::parsing_commands(std::string msg, int fd)
 			cmd.erase(cmd.find('\n') - 1);
 	}
 	return (commande(text, fd, cmd));
-}
-
-void	server::cmd_mode(commande &param){
-	std::string	to_send;
-	std::vector<std::string> args;
-
-	if (param.get_params().empty()){
-		to_send = ":"+ _name + " 461 " + param.get_cmd()+ " " + ERR_NEEDMOREPARAMS;
-		_messages.push_back(message(to_send, param.get_fd()));
-		return ;
-	}
-	args = ft_split(param.get_params(), " ");
-	if (args.size() == 1){
-		to_send = ":"+ _name + " 324 " + get_client_by_fd(param.get_fd()).get_nickname()+ " " + args[0] + " +t\r\n";
-		_messages.push_back(message(to_send, param.get_fd()));
-		return ;
-	}
 }
 
 void	server::handle_message(std::string line, int fd)
@@ -293,7 +282,7 @@ void	server::fct_buffer(fd_set &read_fds){
 				else
 				{
 					tmp = buffer;
-					std::cout << tmp;
+					// std::cout << tmp;
 					if (tmp.find('\n') == std::string::npos)
 						tmp += "\n";
 					while (tmp.find('\n') != std::string::npos)
@@ -371,6 +360,8 @@ std::vector<std::string> server::ft_split(std::string param, std::string delim){
 	std::vector<std::string>	res;
 	std::string::size_type		found;
 	
+	if (param.empty())
+		return res;
 	found = param.find(delim);
 	while (found != std::string::npos){
 		if (found != 0)
@@ -431,7 +422,7 @@ int	server::is_valid_chan_name(commande &param, std::string chan_check){
 	std::string to_send;
 	
 	if (chan_check.size() > 50 || (chan_check[0] != '&' && chan_check[0] != '+' && chan_check[0] != '#' && chan_check[0] != '!')){
-		to_send = "403 ";
+		to_send = ":ft_irc_all 403 ";
 		to_send += chan_check;
 		to_send += ERR_NOSUCHCHANNEL;
 		_messages.push_back(message(to_send, param.get_fd()));
@@ -439,7 +430,7 @@ int	server::is_valid_chan_name(commande &param, std::string chan_check){
 	}
 	for (size_t i = 1; chan_check[i]; i++){
 		if (chan_check[i] == ' ' || chan_check[i] == ',' || chan_check[i] == 7){
-			to_send = "403 ";
+			to_send = ":ft_irc_all 403 ";
 			to_send += chan_check;
 			to_send += ERR_NOSUCHCHANNEL;
 			_messages.push_back(message(to_send, param.get_fd()));
@@ -530,16 +521,16 @@ static int	isspecial(char c){
 int	server::handle_errone(commande &param){
 	std::string	to_send;
 
-	std::cout << param.get_params() << std::endl;
+	// std::cout << param.get_params() << std::endl;
 	if (param.get_params().size() > 9){
-		to_send = "432 ";
+		to_send = ":ft_irc_all 432 ";
 		to_send += param.get_params();
 		to_send += ERR_ERRONEUSNICKNAME;
 		_messages.push_back(message(to_send, param.get_fd()));
 		return (EXIT_FAILURE);
 	}
 	if (isspecial(param.get_params().at(0)) == EXIT_FAILURE && !isalpha(param.get_params().at(0))){
-		to_send = "432 ";
+		to_send = ":ft_irc_all 432 ";
 		to_send += param.get_params();
 		to_send += ERR_ERRONEUSNICKNAME;
 		_messages.push_back(message(to_send, param.get_fd()));
@@ -547,7 +538,7 @@ int	server::handle_errone(commande &param){
 	}
 	for (size_t i = 1; i < param.get_params().size(); i++){
 		if (isspecial(param.get_params().at(i)) == EXIT_FAILURE && !isalpha(param.get_params().at(i)) && !isdigit(param.get_params().at(i)) && (param.get_params().at(i)) != '-'){
-			to_send = "432 ";
+			to_send = ":ft_irc_all 432 ";
 			to_send += param.get_params();
 			to_send += ERR_ERRONEUSNICKNAME;
 			_messages.push_back(message(to_send, param.get_fd()));
@@ -555,4 +546,56 @@ int	server::handle_errone(commande &param){
 		}
 	}
 	return (EXIT_SUCCESS);
+}
+
+void	server::delete_chan(std::string which_chan){
+	std::vector<channel>::iterator it = _full_channel_list.begin();
+	std::vector<channel>::iterator ite = _full_channel_list.end();
+
+	for (;it != ite; it++){
+		if (which_chan == (*it).get_name()){
+			_full_channel_list.erase(it);
+			break ;
+		}
+	}
+}
+
+void	server::delete_client(std::string which_client){
+	std::vector<client>::iterator it = _full_client_list.begin();
+	std::vector<client>::iterator ite = _full_client_list.end();
+
+	for (;it != ite; it++){
+		if (which_client == (*it).get_nickname()){
+			_full_client_list.erase(it);
+			break ;
+		}
+	}
+}
+
+static std::string int_to_string(int nb){
+    std::stringstream ss;
+    ss << nb;
+    std::string str = ss.str();
+    return str;
+}
+
+
+std::string	server::list_active_mods(channel &chan){
+	std::string active_mods = "+";
+
+	if (chan.get_invite_only() == true)
+		active_mods += "i";
+	if (chan.get_topic_restrict() == true)
+		active_mods += "t";
+	if (!chan.get_password().empty())
+		active_mods += "k";
+	if (chan.get_limit_users() > 0)
+		active_mods += "l";
+	if (!chan.get_password().empty())
+		active_mods += " " + chan.get_password();
+	if (chan.get_limit_users() > 0){
+		active_mods += " ";
+		active_mods += int_to_string(chan.get_limit_users());
+	}
+	return (active_mods);
 }

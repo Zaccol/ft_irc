@@ -17,30 +17,32 @@ void	server::cmd_topic(commande &param){
 	}
 	args = ft_split_once(param.get_params(), " ");
 	if (get_client_by_fd(param.get_fd()).is_it_tonchan(args.at(0)) == EXIT_FAILURE){
-		to_send = ":"+_name+ " 442 ";
+		to_send = ":"+_name+ " 442 " + get_client_by_fd(param.get_fd()).get_nickname()+" ";
 		to_send = args.at(0);
 		to_send += ERR_NOTONCHANNEL;
 		_messages.push_back(message(to_send, param.get_fd()));
 		return ;
 	}
-	if (get_channel_by_name(args.at(0)).is_client_operator(get_client_by_fd(param.get_fd()).get_nickname()) == EXIT_FAILURE){
-		to_send = ":"+_name+" 482 ";
-		to_send += args.at(0);
-		to_send += ERR_CHANOPRIVSNEEDED;
-		_messages.push_back(message(to_send, param.get_fd()));
-		return ;
+	if (get_channel_by_name(args[0]).get_topic_restrict() == true){
+		if (get_channel_by_name(args.at(0)).is_client_operator(get_client_by_fd(param.get_fd()).get_nickname()) == EXIT_FAILURE){
+			to_send = ":"+_name+" 482 " + get_client_by_fd(param.get_fd()).get_nickname()+" ";
+			to_send += args.at(0);
+			to_send += ERR_CHANOPRIVSNEEDED;
+			_messages.push_back(message(to_send, param.get_fd()));
+			return ;
+		}
 	}
 	if (args.size() == 1){
 		if (!get_channel_by_name(args.at(0)).get_topic().empty()){
-			to_send = ":"+_name+" 332 ";
+			to_send = ":"+_name+" 332 " + get_client_by_fd(param.get_fd()).get_nickname()+" ";
 			to_send += args.at(0);
-			to_send += " :";
+			to_send += " ";
 			to_send += get_channel_by_name(args.at(0)).get_topic();
 			to_send += "\r\n";
 			_messages.push_back(message(to_send, param.get_fd()));
 		}
 		else{
-			to_send = ":"+_name+" 331 ";
+			to_send = ":"+_name+" 331 " + get_client_by_fd(param.get_fd()).get_nickname()+" ";
 			to_send += args.at(0);
 			to_send += RPL_NOTOPIC;
 			_messages.push_back(message(to_send, param.get_fd()));
@@ -54,7 +56,4 @@ void	server::cmd_topic(commande &param){
 				_messages.push_back(*it);
 			}
 	}
-//	👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇 👇
-	//	Quand le TOPIC change tous les utilisateurs doivent etre averti
-//	👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 👆 🖕 👆 👆 👆 👆 👆 👆 👆
 }

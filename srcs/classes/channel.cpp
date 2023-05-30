@@ -1,6 +1,6 @@
 #include "irc.hpp"
 
-channel::channel(std::string name): _name(name)
+channel::channel(std::string name): _name(name), _invite_only(false), _topic_restrict(true), _password("")
 {
 	std::vector<client> user_list;
 }
@@ -33,6 +33,38 @@ void	channel::set_topic(std::string topic)
 		return ;
 	}
 	_topic = topic;
+}
+
+void	channel::set_invite_only_true(){
+	_invite_only = true;
+}
+
+void	channel::set_invite_only_false(){
+	_invite_only = false;
+}
+
+void	channel::set_topic_restrict_true(){
+	_topic_restrict = true;
+}
+
+void	channel::set_topic_restrict_false(){
+	_topic_restrict = false;
+}
+
+void	channel::set_password(std::string password){
+	_password = password;
+}
+
+const bool	&channel::get_invite_only(void){
+	return (_invite_only);
+}
+
+const bool	&channel::get_topic_restrict(void){
+	return (_topic_restrict);
+}
+
+const std::string	&channel::get_password(void){
+	return (_password);
 }
 
 int	channel::is_client_in_chan(std::string which_client){
@@ -88,6 +120,10 @@ std::vector<message>	channel::send_message_to_all_users_of_this_channel(std::str
 	return sendi;
 }
 
+size_t	channel::get_nb_users(void){
+	return user_list.size();
+}
+
 void	channel::remove_client_from_chan(client &user){
 	std::vector<client>::iterator it = user_list.begin();
 	std::vector<client>::iterator ite = user_list.end();
@@ -101,7 +137,7 @@ void	channel::remove_client_from_chan(client &user){
 	std::vector<client>::iterator ite2 = op_user_list.end();
 
 	for (; it2 != ite2; it2++){
-		if ((*it).get_nickname() == user.get_nickname())
+		if ((*it2).get_nickname() == user.get_nickname())
 			op_user_list.erase(it2);
 	}
 }
@@ -111,7 +147,7 @@ std::vector<std::string>	channel::send_rpl_whoreply_without_mode(std::string _na
 	std::string					to_send;
 
 	for (std::vector<client>::iterator it = user_list.begin(); it != user_list.end(); it++){
-		to_send = "352 " + (*it).get_nickname()+" "+chan_name+" ~"+(*it).get_username()+" "+_name+" " + _name + " " + (*it).get_nickname() + " H@ :0 " + (*it).get_realname()+"\r\n";
+		to_send = "352 " + (*it).get_nickname()+" "+chan_name+" ~"+(*it).get_username()+" "+_name+" " + _name + " " + (*it).get_nickname() + " H :0 " + (*it).get_realname()+"\r\n";
 		list.push_back(to_send);
 	}
 	return list;
@@ -122,7 +158,7 @@ std::vector<std::string>	channel::send_rpl_whoreply_with_mode(std::string _name,
 	std::string					to_send;
 
 	for (std::vector<client>::iterator it = op_user_list.begin(); it != op_user_list.end(); it++){
-		to_send = "352 " + (*it).get_nickname()+" "+chan_name+" ~"+(*it).get_username()+" "+_name+" " + _name + " " + (*it).get_nickname() + " H@ :0 " + (*it).get_realname()+"\r\n";
+		to_send = "352 " + (*it).get_nickname()+" "+chan_name+" ~"+(*it).get_username()+" "+_name+" " + _name + " " + (*it).get_nickname() + " H :0 " + (*it).get_realname()+"\r\n";
 		list.push_back(to_send);
 	}
 	return list;
@@ -157,3 +193,34 @@ std::vector<message>	channel::send_join_msg_to_everyone(std::string msg){
 	return list;
 }
 
+int	channel::is_chan_empty(void){
+	if (user_list.empty())
+		return EXIT_SUCCESS;
+	return EXIT_FAILURE;
+}
+
+void	channel::remove_password(void){
+	_password.clear();
+}
+
+void	channel::remove_privilege_from_chan(client &user){
+	std::vector<client>::iterator it2 = op_user_list.begin();
+	std::vector<client>::iterator ite2 = op_user_list.end();
+
+	for (; it2 != ite2; it2++){
+		if ((*it2).get_nickname() == user.get_nickname())
+			op_user_list.erase(it2);
+	}
+}
+
+int	&channel::get_limit_users(void){
+	return _limit_users;
+}
+
+void	channel::set_limit_users(int nb){
+	_limit_users = nb;
+}
+
+// int	channel::common_channels(client &querry_user, client &random_user){
+// 	//TODO parcourir tous les channels du random_user et si querry appartient a l un d entre eux faut pas le lister dans WHO
+// }

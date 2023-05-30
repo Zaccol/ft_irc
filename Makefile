@@ -18,7 +18,7 @@ vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 CLASS = server.cpp client.cpp channel.cpp commande.cpp message.cpp
 # TMP_CMDS = nick.cpp pass.cpp
-CHAN_CMDS = invite.cpp join.cpp kick.cpp part.cpp topic.cpp
+CHAN_CMDS = invite.cpp join.cpp kick.cpp part.cpp topic.cpp mode.cpp
 MSG_CMDS = notice.cpp privmsg.cpp
 USER_CMDS = nick.cpp pass.cpp user.cpp cap.cpp quit.cpp
 USER_QUERIES = who.cpp
