@@ -70,7 +70,11 @@ void	server::cmd_join(commande &param){
 	if (list_keys.size() != list_chans.size())
 		return ;
 	if (chans == "0"){
-		get_client_by_fd(param.get_fd()).remove_all_channels_of_user();
+		if (get_client_by_fd(param.get_fd()).get_nb_channels() == 0)
+			return ;
+		to_send = "PART " + get_client_by_fd(param.get_fd()).part_list_channels_of_user();
+		commande cmd = parsing_commands(to_send, param.get_fd());
+		cmd_part(cmd);
 		return ;
 	}
 	std::vector<std::string>::iterator it2 = list_chans.begin();

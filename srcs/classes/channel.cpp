@@ -1,8 +1,8 @@
 #include "irc.hpp"
 
-channel::channel(std::string name): _name(name), _invite_only(false), _topic_restrict(true), _password("")
+channel::channel(std::string name): _name(name), _topic(""), _invite_only(false), _limit_users(0) , _topic_restrict(true), _password("")
 {
-	std::vector<client> user_list;
+	// std::vector<client> user_list;
 }
 
 channel::~channel()
@@ -147,7 +147,7 @@ std::vector<std::string>	channel::send_rpl_whoreply_without_mode(std::string _na
 	std::string					to_send;
 
 	for (std::vector<client>::iterator it = user_list.begin(); it != user_list.end(); it++){
-		to_send = "352 " + (*it).get_nickname()+" "+chan_name+" ~"+(*it).get_username()+" "+_name+" " + _name + " " + (*it).get_nickname() + " H :0 " + (*it).get_realname()+"\r\n";
+		to_send = ":ft_irc_all 352 " + (*it).get_nickname()+" "+chan_name+" ~"+(*it).get_username()+" "+_name+" " + _name + " " + (*it).get_nickname() + " H :0 " + (*it).get_realname()+"\r\n";
 		list.push_back(to_send);
 	}
 	return list;
@@ -158,7 +158,7 @@ std::vector<std::string>	channel::send_rpl_whoreply_with_mode(std::string _name,
 	std::string					to_send;
 
 	for (std::vector<client>::iterator it = op_user_list.begin(); it != op_user_list.end(); it++){
-		to_send = "352 " + (*it).get_nickname()+" "+chan_name+" ~"+(*it).get_username()+" "+_name+" " + _name + " " + (*it).get_nickname() + " H :0 " + (*it).get_realname()+"\r\n";
+		to_send = ":ft_irc_all 352 " + (*it).get_nickname()+" "+chan_name+" ~"+(*it).get_username()+" "+_name+" " + _name + " " + (*it).get_nickname() + " H :0 " + (*it).get_realname()+"\r\n";
 		list.push_back(to_send);
 	}
 	return list;

@@ -86,7 +86,7 @@ void	server::cmd_mode(commande &param){
 					return ;
 				if (args[2].size() > 1)
 					return ;
-				if (atoi(args[2].c_str()) < 0)
+				if (!(args[2][0] >= '0' && args[2].at(0) <= '9'))
 					return ;
 				get_channel_by_name(args[0]).set_limit_users(atoi(args[2].c_str()));
 			}

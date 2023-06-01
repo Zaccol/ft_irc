@@ -19,6 +19,7 @@ class client{
 
 
 	public:
+		std::string				buf;
 		client(int socket);
 		client(std::string name, int socket);
 		~client();
@@ -45,9 +46,11 @@ class client{
 
 		int					is_it_tonchan(std::string which_chan);
 		void				add_chan_to_client(channel &chan);
+		std::string			part_list_channels_of_user();
 		void				remove_all_channels_of_user();
 		void				remove_one_channel_of_user(std::string which_chan);
 		channel				&get_channel(std::string chan_name);
 		std::string			channel_name_list();
 		std::string			get_last_channel();
+		int					get_nb_channels();
 };

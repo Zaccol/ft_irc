@@ -1,7 +1,9 @@
 #include "irc.hpp"
 
 client::client(std::string name, int socket): _username(name), _socket(socket), _userdone(false), _passdone(false), _nickdone(false)
-{}
+{
+	buf = "";
+}
 
 client::client(int socket): _socket(socket), _userdone(false), _passdone(false), _nickdone(false)
 {}
@@ -112,6 +114,19 @@ void	client::add_chan_to_client(channel &chan){
 	_channel_list.push_back(chan);
 }
 
+std::string	client::part_list_channels_of_user(){
+	std::vector<channel>::iterator	it =  _channel_list.begin();
+	std::vector<channel>::iterator	ite = _channel_list.end();
+	std::string						to_send;
+
+	for (; it != ite; it++){
+		to_send += (*it).get_name() + ",";
+	}
+	if (_channel_list.size() != 0)
+		to_send.erase(to_send.end()-1);
+	return to_send;
+}
+
 void	client::remove_all_channels_of_user(){
 	std::vector<channel>::iterator it =  _channel_list.begin();
 	std::vector<channel>::iterator ite = _channel_list.end();
@@ -119,7 +134,8 @@ void	client::remove_all_channels_of_user(){
 	for (; it != ite; it++){
 		(*it).remove_client_from_chan(*this);
 	}
-	_channel_list.erase(_channel_list.begin(), _channel_list.end());
+	// _channel_list.erase(_channel_list.begin(), _channel_list.end());
+	_channel_list.clear();
 }
 
 void	client::remove_one_channel_of_user(std::string which_chan){
@@ -161,4 +177,8 @@ std::string	client::get_last_channel(){
 	if (_channel_list.empty())
 		return "*";
 	return _channel_list.back().get_name();
+}
+
+int	client::get_nb_channels(){
+	return _channel_list.size();
 }

@@ -62,14 +62,14 @@ server::~server(void)
 	for (; it != ite; it++){
 		(*it).remove_all_channels_of_user();
 	}
-	// _messages.erase(_messages.begin(), _messages.end());
-	std::vector<message>::iterator it2 = _messages.begin();
-	std::vector<message>::iterator ite2 = _messages.end();
-	for (; it2 != ite2; it2++)
-		(*it2).~message();
+	_messages.erase(_messages.begin(), _messages.end());
+	// std::vector<message>::iterator it2 = _messages.begin();
+	// std::vector<message>::iterator ite2 = _messages.end();
+	// for (; it2 != ite2; it2++)
+	// 	(*it2).~message();
 	_full_channel_list.erase(_full_channel_list.begin(), _full_channel_list.end());
 	_full_client_list.erase(_full_client_list.begin(), _full_client_list.end());
-	close(_port);
+	// close(_port);
 	// std::cout << "destruction terminado putain\n\n" << std::endl;
 }
 
@@ -169,7 +169,7 @@ commande	server::parsing_commands(std::string msg, int fd)
 
 void	server::handle_message(std::string line, int fd)
 {
-	std::string	cmds_str[14] = {"INVITE", "JOIN", "KICK", "PART", "TOPIC", "PRIVMSG", "NOTICE", "NICK", "PASS", "USER", "CAP", "MODE", "WHO", "QUIT"};
+	std::string	cmds_str[14] = {"INVITE ", "JOIN ", "KICK ", "PART ", "TOPIC ", "PRIVMSG ", "NOTICE ", "NICK ", "PASS ", "USER ", "CAP ", "MODE ", "WHO ", "QUIT"};
 	size_t	space_pos = line.find_first_of(' ');
 
 	if (line[0] == ':')
@@ -182,31 +182,31 @@ void	server::handle_message(std::string line, int fd)
 				{
 					commande cmd = parsing_commands(line, fd);
 					line.clear();
-					if (cmds_str[i].compare("PASS") == 0)
+					if (cmds_str[i].compare("PASS ") == 0)
 						cmd_pass(cmd);
-					else if (cmds_str[i].compare("NICK") == 0)
+					else if (cmds_str[i].compare("NICK ") == 0)
 						cmd_nick(cmd);
-					else if (cmds_str[i].compare("USER") == 0)
+					else if (cmds_str[i].compare("USER ") == 0)
 						cmd_user(cmd);
-					else if (cmds_str[i].compare("INVITE") == 0)
+					else if (cmds_str[i].compare("INVITE ") == 0)
 						cmd_invite(cmd);
-					else if (cmds_str[i].compare("JOIN") == 0)
+					else if (cmds_str[i].compare("JOIN ") == 0)
 						cmd_join(cmd);
-					else if (cmds_str[i].compare("KICK") == 0)
+					else if (cmds_str[i].compare("KICK ") == 0)
 						cmd_kick(cmd);
-					else if (cmds_str[i].compare("PART") == 0)
+					else if (cmds_str[i].compare("PART ") == 0)
 						cmd_part(cmd);
-					else if (cmds_str[i].compare("TOPIC") == 0)
+					else if (cmds_str[i].compare("TOPIC ") == 0)
 						cmd_topic(cmd);
-					else if (cmds_str[i].compare("PRIVMSG") == 0)
+					else if (cmds_str[i].compare("PRIVMSG ") == 0)
 						cmd_privmsg(cmd);
-					else if (cmds_str[i].compare("NOTICE") == 0)
+					else if (cmds_str[i].compare("NOTICE ") == 0)
 						cmd_notice(cmd);
-					else if (cmds_str[i].compare("CAP") == 0)
+					else if (cmds_str[i].compare("CAP ") == 0)
 						cmd_cap();
-					else if (cmds_str[i].compare("MODE") == 0)
+					else if (cmds_str[i].compare("MODE ") == 0)
 						cmd_mode(cmd);
-					else if (cmds_str[i].compare("WHO") == 0)
+					else if (cmds_str[i].compare("WHO ") == 0)
 						cmd_who(cmd);
 					else if (cmds_str[i].compare("QUIT") == 0)
 						cmd_quit(cmd);
@@ -223,31 +223,31 @@ void	server::handle_message(std::string line, int fd)
 			{
 				commande cmd = parsing_commands(line, fd);
 				line.clear();
-				if (cmds_str[i].compare("PASS") == 0)
+				if (cmds_str[i].compare("PASS ") == 0)
 					cmd_pass(cmd);
-				else if (cmds_str[i].compare("NICK") == 0)
+				else if (cmds_str[i].compare("NICK ") == 0)
 					cmd_nick(cmd);
-				else if (cmds_str[i].compare("USER") == 0)
+				else if (cmds_str[i].compare("USER ") == 0)
 					cmd_user(cmd);
-				else if (cmds_str[i].compare("INVITE") == 0)
+				else if (cmds_str[i].compare("INVITE ") == 0)
 					cmd_invite(cmd);
-				else if (cmds_str[i].compare("JOIN") == 0)
+				else if (cmds_str[i].compare("JOIN ") == 0)
 					cmd_join(cmd);
-				else if (cmds_str[i].compare("KICK") == 0)
+				else if (cmds_str[i].compare("KICK ") == 0)
 					cmd_kick(cmd);
-				else if (cmds_str[i].compare("PART") == 0)
+				else if (cmds_str[i].compare("PART ") == 0)
 					cmd_part(cmd);
-				else if (cmds_str[i].compare("TOPIC") == 0)
+				else if (cmds_str[i].compare("TOPIC ") == 0)
 					cmd_topic(cmd);
-				else if (cmds_str[i].compare("PRIVMSG") == 0)
+				else if (cmds_str[i].compare("PRIVMSG ") == 0)
 					cmd_privmsg(cmd);
-				else if (cmds_str[i].compare("NOTICE") == 0)
+				else if (cmds_str[i].compare("NOTICE ") == 0)
 					cmd_notice(cmd);
-				else if (cmds_str[i].compare("CAP") == 0)
+				else if (cmds_str[i].compare("CAP ") == 0)
 					cmd_cap();
-				else if (cmds_str[i].compare("MODE") == 0)
+				else if (cmds_str[i].compare("MODE ") == 0)
 					cmd_mode(cmd);
-				else if (cmds_str[i].compare("WHO") == 0)
+				else if (cmds_str[i].compare("WHO ") == 0)
 					cmd_who(cmd);
 				else if (cmds_str[i].compare("QUIT") == 0)
 					cmd_quit(cmd);
@@ -261,7 +261,7 @@ void	server::handle_message(std::string line, int fd)
 void	server::fct_buffer(fd_set &read_fds){
 		char		buffer[1024] = {0};
 		std::string	tmp;
-
+		std::string buf;
 		std::vector<client>::iterator it = _full_client_list.begin();
 		std::vector<client>::iterator itend = _full_client_list.end();
 
@@ -271,7 +271,12 @@ void	server::fct_buffer(fd_set &read_fds){
 			int	fd = (*it).get_socket();
 			if (FD_ISSET(fd, &read_fds))
 			{
-				int	valread = read(fd, buffer, 512);
+				unsigned int	valread = read(fd, buffer, 1024);
+				get_client_by_fd(fd).buf += buffer;
+				if (get_client_by_fd(fd).buf.size() > 512){
+					get_client_by_fd(fd).buf.clear();
+					continue ;
+				}
 				if (valread < 0)
 				{
 					del_client(fd);
@@ -281,17 +286,16 @@ void	server::fct_buffer(fd_set &read_fds){
 				}
 				else
 				{
-					tmp = buffer;
-					// std::cout << tmp;
-					if (tmp.find('\n') == std::string::npos)
-						tmp += "\n";
-					while (tmp.find('\n') != std::string::npos)
+					// if (get_client_by_fd(fd).buf.find('\n') == std::string::npos)
+					// 	get_client_by_fd(fd).buf += "\n";
+					while (get_client_by_fd(fd).buf.find("\r\n") != std::string::npos)
 					{
-						handle_message(tmp, fd);
-						tmp.assign(tmp.substr(tmp.find('\n') + 1, tmp.size()));
+						handle_message(get_client_by_fd(fd).buf, fd);
+						get_client_by_fd(fd).buf.assign(get_client_by_fd(fd).buf.substr(get_client_by_fd(fd).buf.find('\n') + 1, get_client_by_fd(fd).buf.size()));
 					}
 				}
 			}
+			memset(buffer, '\0', 1024);
 		}
 }
 
@@ -492,7 +496,7 @@ void	server::sending_replies_for_new_channel(int fd, std::string chan_name){
 	to_send = ":"+get_client_by_fd(fd).get_nickname()+"!~" +get_client_by_fd(fd).get_username()+"@"+_name+" JOIN :";
 	to_send += chan_name;
 	to_send += "\r\n";
-	_messages.push_back(message(to_send, fd));
+	// _messages.push_back(message(to_send, fd));
 	// to_send = ":"+_name+" 331 ";
 	// to_send += get_client_by_fd(fd).get_nickname() + " ";
 	// to_send += chan_name;

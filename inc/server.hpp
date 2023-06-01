@@ -85,4 +85,4 @@ class server{
 
 };
 
-int	server_loop(server &serv);
+void	server_loop(server &serv);

@@ -1,19 +1,17 @@
 #include "irc.hpp"
 
-// int	serv_port;
+bool is_running = true;
 
 static void signal_handler(int signal) {
     if (signal == SIGINT) {
         std::cout << "\n\x1b[1;5;31mServer socket closed\x1b[0m" << std::endl;
-		// close(serv_port);
-        exit(128 + signal);
+        is_running = false;
     }
 }
 
-int	server_loop(server &serv)
+void	server_loop(server &serv)
 {
-	// serv_port = serv.get_server_fd();
-	while (true)
+	while (is_running)
 	{
 		signal(SIGINT, &signal_handler);
 		signal(SIGQUIT, SIG_IGN);
@@ -23,13 +21,13 @@ int	server_loop(server &serv)
 		// Attente de l'activité sur le(s) fds clients
 		if (select(serv.get_max_fd() + 1, &read_fds, &write_fds, NULL, NULL) < 0)
 		{
-			std::cerr << "Error: select() could not read fds\n";
-			return (1);
+			// std::cerr << "Error: select() could not read fds\n";
+			return ;
 		}
 		// Nouvelle connexion de client
 		if (FD_ISSET(serv.get_server_fd(), &read_fds))
 			if (serv.add_client() == 1)
-				return (1);
+				return ;
 		serv.send_messages(write_fds);
 		// Lecture des messages envoyés par les clients
 		serv.fct_buffer(read_fds);
