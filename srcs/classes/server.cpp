@@ -169,85 +169,85 @@ commande	server::parsing_commands(std::string msg, int fd)
 
 void	server::handle_message(std::string line, int fd)
 {
-	std::string	cmds_str[14] = {"INVITE ", "JOIN ", "KICK ", "PART ", "TOPIC ", "PRIVMSG ", "NOTICE ", "NICK ", "PASS ", "USER ", "CAP ", "MODE ", "WHO ", "QUIT"};
-	size_t	space_pos = line.find_first_of(' ');
+	std::string	cmds_str[14] = {"INVITE", "JOIN", "KICK", "PART", "TOPIC", "PRIVMSG", "NOTICE", "NICK", "PASS", "USER", "CAP", "MODE", "WHO", "QUIT"};
+	// size_t	space_pos = line.find_first_of(' ');
 
-	if (line[0] == ':')
-	{
-		if (space_pos != std::string::npos && space_pos > 1)
-		{
-			for (int i = 0; i < 14; ++i)
-			{
-				if (line.find(cmds_str[i]) == space_pos + 1)
-				{
-					commande cmd = parsing_commands(line, fd);
-					line.clear();
-					if (cmds_str[i].compare("PASS ") == 0)
-						cmd_pass(cmd);
-					else if (cmds_str[i].compare("NICK ") == 0)
-						cmd_nick(cmd);
-					else if (cmds_str[i].compare("USER ") == 0)
-						cmd_user(cmd);
-					else if (cmds_str[i].compare("INVITE ") == 0)
-						cmd_invite(cmd);
-					else if (cmds_str[i].compare("JOIN ") == 0)
-						cmd_join(cmd);
-					else if (cmds_str[i].compare("KICK ") == 0)
-						cmd_kick(cmd);
-					else if (cmds_str[i].compare("PART ") == 0)
-						cmd_part(cmd);
-					else if (cmds_str[i].compare("TOPIC ") == 0)
-						cmd_topic(cmd);
-					else if (cmds_str[i].compare("PRIVMSG ") == 0)
-						cmd_privmsg(cmd);
-					else if (cmds_str[i].compare("NOTICE ") == 0)
-						cmd_notice(cmd);
-					else if (cmds_str[i].compare("CAP ") == 0)
-						cmd_cap();
-					else if (cmds_str[i].compare("MODE ") == 0)
-						cmd_mode(cmd);
-					else if (cmds_str[i].compare("WHO ") == 0)
-						cmd_who(cmd);
-					else if (cmds_str[i].compare("QUIT") == 0)
-						cmd_quit(cmd);
-					return ;
-				}
-			}
-		}
-	}
-	else
-	{
+	// if (line[0] == ':')
+	// {
+	// 	if (space_pos != std::string::npos && space_pos > 1)
+	// 	{
+	// 		for (int i = 0; i < 14; ++i)
+	// 		{
+	// 			if (line.find(cmds_str[i]) == space_pos + 1)
+	// 			{
+	// 				commande cmd = parsing_commands(line, fd);
+	// 				line.clear();
+	// 				if (cmds_str[i].compare("PASS") == 0)
+	// 					cmd_pass(cmd);
+	// 				else if (cmds_str[i].compare("NICK") == 0)
+	// 					cmd_nick(cmd);
+	// 				else if (cmds_str[i].compare("USER") == 0)
+	// 					cmd_user(cmd);
+	// 				else if (cmds_str[i].compare("INVITE") == 0)
+	// 					cmd_invite(cmd);
+	// 				else if (cmds_str[i].compare("JOIN") == 0)
+	// 					cmd_join(cmd);
+	// 				else if (cmds_str[i].compare("KICK") == 0)
+	// 					cmd_kick(cmd);
+	// 				else if (cmds_str[i].compare("PART") == 0)
+	// 					cmd_part(cmd);
+	// 				else if (cmds_str[i].compare("TOPIC") == 0)
+	// 					cmd_topic(cmd);
+	// 				else if (cmds_str[i].compare("PRIVMSG") == 0)
+	// 					cmd_privmsg(cmd);
+	// 				else if (cmds_str[i].compare("NOTICE") == 0)
+	// 					cmd_notice(cmd);
+	// 				else if (cmds_str[i].compare("CAP") == 0)
+	// 					cmd_cap();
+	// 				else if (cmds_str[i].compare("MODE") == 0)
+	// 					cmd_mode(cmd);
+	// 				else if (cmds_str[i].compare("WHO") == 0)
+	// 					cmd_who(cmd);
+	// 				else if (cmds_str[i].compare("QUIT") == 0)
+	// 					cmd_quit(cmd);
+	// 				return ;
+	// 			}
+	// 		}
+	// 	}
+	// }
+	// else
+	// {
 		for (int i = 0; i < 14; ++i)
 		{
 			if (line.find(cmds_str[i]) == 0)
 			{
 				commande cmd = parsing_commands(line, fd);
 				line.clear();
-				if (cmds_str[i].compare("PASS ") == 0)
+				if (cmds_str[i].compare("PASS") == 0)
 					cmd_pass(cmd);
-				else if (cmds_str[i].compare("NICK ") == 0)
+				else if (cmds_str[i].compare("NICK") == 0)
 					cmd_nick(cmd);
-				else if (cmds_str[i].compare("USER ") == 0)
+				else if (cmds_str[i].compare("USER") == 0)
 					cmd_user(cmd);
-				else if (cmds_str[i].compare("INVITE ") == 0)
+				else if (cmds_str[i].compare("INVITE") == 0)
 					cmd_invite(cmd);
-				else if (cmds_str[i].compare("JOIN ") == 0)
+				else if (cmds_str[i].compare("JOIN") == 0)
 					cmd_join(cmd);
-				else if (cmds_str[i].compare("KICK ") == 0)
+				else if (cmds_str[i].compare("KICK") == 0)
 					cmd_kick(cmd);
-				else if (cmds_str[i].compare("PART ") == 0)
+				else if (cmds_str[i].compare("PART") == 0)
 					cmd_part(cmd);
-				else if (cmds_str[i].compare("TOPIC ") == 0)
+				else if (cmds_str[i].compare("TOPIC") == 0)
 					cmd_topic(cmd);
-				else if (cmds_str[i].compare("PRIVMSG ") == 0)
+				else if (cmds_str[i].compare("PRIVMSG") == 0)
 					cmd_privmsg(cmd);
-				else if (cmds_str[i].compare("NOTICE ") == 0)
+				else if (cmds_str[i].compare("NOTICE") == 0)
 					cmd_notice(cmd);
-				else if (cmds_str[i].compare("CAP ") == 0)
+				else if (cmds_str[i].compare("CAP") == 0)
 					cmd_cap();
-				else if (cmds_str[i].compare("MODE ") == 0)
+				else if (cmds_str[i].compare("MODE") == 0)
 					cmd_mode(cmd);
-				else if (cmds_str[i].compare("WHO ") == 0)
+				else if (cmds_str[i].compare("WHO") == 0)
 					cmd_who(cmd);
 				else if (cmds_str[i].compare("QUIT") == 0)
 					cmd_quit(cmd);
@@ -255,13 +255,14 @@ void	server::handle_message(std::string line, int fd)
 				return ;
 			}
 		}
-	}
+	// }
 }
 
 void	server::fct_buffer(fd_set &read_fds){
 		char		buffer[1024] = {0};
-		std::string	tmp;
-		std::string buf;
+		// std::string	tmp;
+		// static int	i = 0;
+		// std::string buff;
 		std::vector<client>::iterator it = _full_client_list.begin();
 		std::vector<client>::iterator itend = _full_client_list.end();
 
@@ -269,10 +270,16 @@ void	server::fct_buffer(fd_set &read_fds){
 		for (; it != itend; ++it)
 		{
 			int	fd = (*it).get_socket();
+						// get_client_by_fd(fd).buf.clear();
+
+			// std::cout << "check voir si ya un truc dans buf: " << get_client_by_fd(fd).buf << std::endl;
+			// std::cout << "et fd vaut: " << fd << std::endl;
 			if (FD_ISSET(fd, &read_fds))
 			{
 				unsigned int	valread = read(fd, buffer, 1024);
+				std::cout << buffer << std::endl;
 				get_client_by_fd(fd).buf += buffer;
+				// std::cout << i++ << "eme fois: " << get_client_by_fd(fd).buf << " d une taille de " << valread << std::endl;
 				if (get_client_by_fd(fd).buf.size() > 512){
 					get_client_by_fd(fd).buf.clear();
 					continue ;
@@ -288,16 +295,62 @@ void	server::fct_buffer(fd_set &read_fds){
 				{
 					// if (get_client_by_fd(fd).buf.find('\n') == std::string::npos)
 					// 	get_client_by_fd(fd).buf += "\n";
-					while (get_client_by_fd(fd).buf.find("\r\n") != std::string::npos)
+					if (get_client_by_fd(fd).buf.find("\r\n") != std::string::npos)
 					{
+						// std::cout << "ca passe" << std::endl;
 						handle_message(get_client_by_fd(fd).buf, fd);
-						get_client_by_fd(fd).buf.assign(get_client_by_fd(fd).buf.substr(get_client_by_fd(fd).buf.find('\n') + 1, get_client_by_fd(fd).buf.size()));
+						get_client_by_fd(fd).buf.clear();
+						// get_client_by_fd(fd).buf.assign(get_client_by_fd(fd).buf.substr(get_client_by_fd(fd).buf.find('\n') + 1, get_client_by_fd(fd).buf.size()));
+						// handle_message(get_client_by_fd(fd).buf, fd);
 					}
 				}
+				memset(buffer, '\0', 1024);
 			}
-			memset(buffer, '\0', 1024);
+			// memset(buffer, '\0', 1024);
+			// get_client_by_fd(fd).buf.clear();
 		}
 }
+
+// void	server::fct_buffer(fd_set &read_fds){
+// 		char		buffer[1024] = {0};
+// 		// std::string	tmp;
+// 		// std::string buf;
+// 		std::vector<client>::iterator it = _full_client_list.begin();
+// 		std::vector<client>::iterator itend = _full_client_list.end();
+
+
+// 		for (; it != itend; ++it)
+// 		{
+// 			int	fd = (*it).get_socket();
+// 			if (FD_ISSET(fd, &read_fds))
+// 			{
+// 				unsigned int	valread = read(fd, buffer, 1024);
+// 				get_client_by_fd(fd).buf += buffer;
+// 				if (get_client_by_fd(fd).buf.size() > 512){
+// 					get_client_by_fd(fd).buf.clear();
+// 					continue ;
+// 				}
+// 				if (valread < 0)
+// 				{
+// 					del_client(fd);
+// 					if (_full_client_list.empty() == true)
+// 						break ;
+// 					it = _full_client_list.begin();
+// 				}
+// 				else
+// 				{
+// 					// if (get_client_by_fd(fd).buf.find('\n') == std::string::npos)
+// 					// 	get_client_by_fd(fd).buf += "\n";
+// 					if (get_client_by_fd(fd).buf.find("\r\n") != std::string::npos)
+// 					{
+// 						handle_message(get_client_by_fd(fd).buf, fd);
+// 						get_client_by_fd(fd).buf.clear();
+// 					}
+// 				}
+// 			}
+// 			memset(buffer, '\0', 1024);
+// 		}
+// }
 
 // void	server::create_cmds_map(void){
 // 	_cmds_map.insert(std::make_pair("invite", &server::cmd_invite));	//	c est dans <utility> donc je comprend pas l erreur

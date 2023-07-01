@@ -18,7 +18,7 @@ void	server::cmd_quit(commande &param){
 	if (!param.get_params().empty())
 		to_send += " "+param.get_params();
 	to_send += "\r\n";
-	std::cout << to_send << std::endl;
+	// std::cout << to_send << std::endl;
 	send(param.get_fd(), to_send.c_str(), to_send.size(), 0);
 	// _messages.push_back(message(to_send, param.get_fd()));
 	for (; it != ite; it++){
