@@ -11,7 +11,7 @@ static void signal_handler(int signal) {
 
 void	server_loop(server &serv)
 {
-	static int i = 0;
+	// static int i = 0;
 	while (is_running)
 	{
 		signal(SIGINT, &signal_handler);
@@ -26,12 +26,17 @@ void	server_loop(server &serv)
 			return ;
 		}
 		// Nouvelle connexion de client
-		if (FD_ISSET(serv.get_server_fd(), &read_fds))
+		if (FD_ISSET(serv.get_server_fd(), &read_fds)){
 			if (serv.add_client() == 1)
 				return ;
+		}
+		// else
+		// {
+
+		// }
 		serv.send_messages(write_fds);
 		// Lecture des messages envoyés par les clients
-		std::cout << i++ << std::endl;
+		// std::cout << i++ << std::endl;
 		serv.fct_buffer(read_fds);
 	}
 }

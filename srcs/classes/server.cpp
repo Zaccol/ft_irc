@@ -92,7 +92,7 @@ void	server::del_client(int fd)
 {
 	get_client_by_fd(fd).remove_all_channels_of_user();
 	close(fd);
-	std::cout << "BYE BYE CLIENT\n";
+	std::cout << "BYE BYE CLIENT" << std::endl;
 }
 
 fd_set	server::ret_read_fds(void)
@@ -276,36 +276,45 @@ void	server::fct_buffer(fd_set &read_fds){
 			// std::cout << "et fd vaut: " << fd << std::endl;
 			if (FD_ISSET(fd, &read_fds))
 			{
-				unsigned int	valread = read(fd, buffer, 1024);
-				std::cout << buffer << std::endl;
-				get_client_by_fd(fd).buf += buffer;
+				int	valread = read(fd, buffer, 1024);
+				// std::cout << buffer << std::endl;
+				// get_client_by_fd(fd).buf += buffer;
 				// std::cout << i++ << "eme fois: " << get_client_by_fd(fd).buf << " d une taille de " << valread << std::endl;
-				if (get_client_by_fd(fd).buf.size() > 512){
-					get_client_by_fd(fd).buf.clear();
+				if (valread > 512){
+					// get_client_by_fd(fd).buf.clear();
+					memset(buffer, '\0', 1024);
 					continue ;
 				}
 				if (valread < 0)
 				{
+					// get_client_by_fd(fd).buf.clear();
+					// FD_CLR(fd, &read_fds);
 					del_client(fd);
 					if (_full_client_list.empty() == true)
 						break ;
 					it = _full_client_list.begin();
+					FD_CLR(fd, &read_fds);
 				}
 				else
 				{
+					get_client_by_fd(fd).buf += buffer;
 					// if (get_client_by_fd(fd).buf.find('\n') == std::string::npos)
 					// 	get_client_by_fd(fd).buf += "\n";
-					if (get_client_by_fd(fd).buf.find("\r\n") != std::string::npos)
+					while (get_client_by_fd(fd).buf.find("\r\n") != std::string::npos)
 					{
 						// std::cout << "ca passe" << std::endl;
 						handle_message(get_client_by_fd(fd).buf, fd);
-						get_client_by_fd(fd).buf.clear();
-						// get_client_by_fd(fd).buf.assign(get_client_by_fd(fd).buf.substr(get_client_by_fd(fd).buf.find('\n') + 1, get_client_by_fd(fd).buf.size()));
+						// get_client_by_fd(fd).buf.clear();
+						if (get_client_by_fd(fd).buf.find("\r\n") != std::string::npos)
+							get_client_by_fd(fd).buf.assign(get_client_by_fd(fd).buf.substr(get_client_by_fd(fd).buf.find('\n') + 1, get_client_by_fd(fd).buf.size()));
 						// handle_message(get_client_by_fd(fd).buf, fd);
 					}
+					// get_client_by_fd(fd).buf.clear();
 				}
 				memset(buffer, '\0', 1024);
 			}
+			// else
+			// 	break ;
 			// memset(buffer, '\0', 1024);
 			// get_client_by_fd(fd).buf.clear();
 		}
@@ -313,8 +322,8 @@ void	server::fct_buffer(fd_set &read_fds){
 
 // void	server::fct_buffer(fd_set &read_fds){
 // 		char		buffer[1024] = {0};
-// 		// std::string	tmp;
-// 		// std::string buf;
+// 		std::string	tmp;
+
 // 		std::vector<client>::iterator it = _full_client_list.begin();
 // 		std::vector<client>::iterator itend = _full_client_list.end();
 
@@ -324,12 +333,8 @@ void	server::fct_buffer(fd_set &read_fds){
 // 			int	fd = (*it).get_socket();
 // 			if (FD_ISSET(fd, &read_fds))
 // 			{
-// 				unsigned int	valread = read(fd, buffer, 1024);
-// 				get_client_by_fd(fd).buf += buffer;
-// 				if (get_client_by_fd(fd).buf.size() > 512){
-// 					get_client_by_fd(fd).buf.clear();
-// 					continue ;
-// 				}
+// 				int	valread = read(fd, buffer, 512);
+// 				std::cout << buffer << std::endl;
 // 				if (valread < 0)
 // 				{
 // 					del_client(fd);
@@ -339,16 +344,17 @@ void	server::fct_buffer(fd_set &read_fds){
 // 				}
 // 				else
 // 				{
-// 					// if (get_client_by_fd(fd).buf.find('\n') == std::string::npos)
-// 					// 	get_client_by_fd(fd).buf += "\n";
-// 					if (get_client_by_fd(fd).buf.find("\r\n") != std::string::npos)
+// 					tmp = buffer;
+// 					// std::cout << tmp;
+// 					if (tmp.find('\n') == std::string::npos)
+// 						tmp += "\n";
+// 					while (tmp.find('\n') != std::string::npos)
 // 					{
-// 						handle_message(get_client_by_fd(fd).buf, fd);
-// 						get_client_by_fd(fd).buf.clear();
+// 						handle_message(tmp, fd);
+// 						tmp.assign(tmp.substr(tmp.find('\n') + 1, tmp.size()));
 // 					}
 // 				}
 // 			}
-// 			memset(buffer, '\0', 1024);
 // 		}
 // }
 
